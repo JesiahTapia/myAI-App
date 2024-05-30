@@ -1,29 +1,25 @@
-// index.js
-const SimpleAI = require('./AIFirstLife')
-const readline = require('readline')
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 
-const ai = new SimpleAI()
+const app = express();
+const port = 5000;
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-})
+app.use(bodyParser.json());
+app.use(cors());
 
-console.log("Simple AI Module. Type 'exit' to quit.")
-rl.setPrompt('You: ')
-rl.prompt()
+app.post('/chat', (req, res) => {
+    const userMessage = req.body.message;
 
-rl.on('line', (line) => {
-    if (line.trim().toLowerCase() === 'exit') {
-        rl.close()
-        return
+    // Simple response logic
+    let botMessage = "I'm not sure what you mean.";
+    if (userMessage.includes('hello')) {
+        botMessage = 'Hi there! How can I help you today?';
     }
-    const response = ai.getResponse(line.trim())
-    console.log(`AI: ${response}`)
-    rl.prompt()
-})
 
-rl.on('close', () => {
-    console.log('Goodbye!')
-    process.exit(0)
-})
+    res.json({ message: botMessage });
+});
+
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+});
